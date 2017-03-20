@@ -30,10 +30,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -78,11 +81,15 @@ public class MapsActivity extends AppCompatActivity
     private int PROXIMITY_RADIUS = 4000;
     Marker mCurrLocationMarker;
     LocationRequest mLocationRequest;
+    ArrayList<LatLng> MarkerPoints;
+
+    ArrayList<NearByTransit> nearByTransitArrayList = new ArrayList<NearByTransit>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // Initializing
+        MarkerPoints = new ArrayList<>();
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -150,6 +157,7 @@ public class MapsActivity extends AppCompatActivity
 
     /**
      * Sets up the options menu.
+     *
      * @param menu The options menu.
      * @return Boolean.
      */
@@ -161,6 +169,7 @@ public class MapsActivity extends AppCompatActivity
 
     /**
      * Handles a click on the menu option to get a place.
+     *
      * @param item The menu item to handle.
      * @return Boolean.
      */
@@ -195,7 +204,7 @@ public class MapsActivity extends AppCompatActivity
             public View getInfoContents(Marker marker) {
                 // Inflate the layouts for the info window, title and snippet.
                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                        (FrameLayout)findViewById(R.id.map), false);
+                        (FrameLayout) findViewById(R.id.map), false);
 
                 TextView title = ((TextView) infoWindow.findViewById(R.id.title));
                 title.setText(marker.getTitle());
@@ -207,11 +216,77 @@ public class MapsActivity extends AppCompatActivity
             }
         });
 
+        // Setting onclick event listener for the map
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+
+                // Already two locations
+                if (MarkerPoints.size() > 1) {
+                    MarkerPoints.clear();
+                    mMap.clear();
+                }
+
+                // Adding new item to the ArrayList
+                MarkerPoints.add(point);
+
+                // Creating MarkerOptions
+                MarkerOptions options = new MarkerOptions();
+
+                // Setting the position of the marker
+                options.position(point);
+
+                /**
+                 * For the start location, the color of marker is GREEN and
+                 * for the end location, the color of marker is RED.
+                 */
+                if (MarkerPoints.size() == 1) {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                } else if (MarkerPoints.size() == 2) {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                }
+
+
+                // Add new marker to the Google Map Android API V2
+                mMap.addMarker(options);
+
+                // Checks, whether start and end locations are captured
+                if (MarkerPoints.size() >= 2) {
+                    LatLng origin = MarkerPoints.get(0);
+                    LatLng dest = MarkerPoints.get(1);
+
+                    // origin current location
+                    // destination list
+                    // cycling time
+
+
+                    // Getting URL to the Google Directions API
+                    String url = getUrl(origin, dest);
+                    Log.d("onMapClick", url.toString());
+                    Object[] DataTransfer = new Object[2];
+                    DataTransfer[0] = mMap;
+                    DataTransfer[1] = url;
+                    FetchUrl FetchUrl = new FetchUrl();
+
+                    // Start downloading json data from Google Directions API
+                    FetchUrl.execute(DataTransfer);
+                    //move map camera
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                }
+
+            }
+        });
+
+
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+
+        test_call();
     }
 
     /**
@@ -285,17 +360,18 @@ public class MapsActivity extends AppCompatActivity
         }
 
         latitude = mLastKnownLocation.getLatitude();
-        longitude= mLastKnownLocation.getLongitude();
-        String url = getUrl(latitude, longitude, "transit_station" );
-        Log.e("URL =================" , url);
-        Object[] DataTransfer = new Object[2];
+        longitude = mLastKnownLocation.getLongitude();
+        String url = getUrl(latitude, longitude, "transit_station");
+        Log.e("URL =================", url);
+        Object[] DataTransfer = new Object[4];
         DataTransfer[0] = mMap;
         DataTransfer[1] = url;
+        DataTransfer[2] = mLastKnownLocation;
+        DataTransfer[3] = nearByTransitArrayList;
         Log.d("onClick", url);
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.execute(DataTransfer);
-        Toast.makeText(MapsActivity.this,"Nearby transits", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(MapsActivity.this, "Nearby transits", Toast.LENGTH_LONG).show();
 
 
 //        if (mLocationPermissionGranted) {
@@ -410,7 +486,7 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
-    private String getUrl(double latitude, double longitude, String nearbyPlace) {
+    public static String getUrl(double latitude, double longitude, String nearbyPlace) {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
@@ -421,5 +497,40 @@ public class MapsActivity extends AppCompatActivity
         googlePlacesUrl.append("&key=" + "AIzaSyDIdqc_BwvnRC24_FwS4-oSITnKFT1N5AY");
         Log.d("getUrl", googlePlacesUrl.toString());
         return (googlePlacesUrl.toString());
+    }
+
+    public static String getUrl(LatLng origin, LatLng dest) {
+
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+
+        String mode = "mode=bicycling";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+
+
+        return url;
+    }
+
+
+    public void test_call() {
+        showCurrentPlace();
+
+        Log.d("GOT_NEARBY_TRANSIT", "" + nearByTransitArrayList.size());
+        mMap.addPolyline(nearByTransitArrayList.get(0).getPolyLineOptions());
     }
 }
