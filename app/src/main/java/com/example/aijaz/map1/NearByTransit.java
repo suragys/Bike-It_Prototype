@@ -14,12 +14,42 @@ public class NearByTransit {
     private LatLng origin;
     private LatLng pos;
     private LatLng destnation;
-    private int timeInMin;
-    private String duration;
+    private int cycTimeInMin;
+    private String cycDuration;
     private String url;
+    private int totalTimeInMin;
+    private String transitTime;
 
     private JSONObject apiResponse;
     private PolylineOptions polyLineOptions;
+    private PolylineOptions polylineOptionsToDest;
+
+    public int getTotalTimeInMin() {
+        return totalTimeInMin;
+    }
+
+    public void setTotalTimeInMin(int totalTimeInMin) {
+        this.totalTimeInMin = totalTimeInMin;
+    }
+
+    public String getTransitTime() {
+        return transitTime;
+    }
+
+    public void setTransitTime(String transitTime) {
+        this.transitTime = transitTime;
+    }
+
+    public PolylineOptions getPolylineOptionsToDest() {
+        return polylineOptionsToDest;
+    }
+
+    public void setPolylineOptionsToDest(PolylineOptions polylineOptionsToDest) {
+
+        this.polylineOptionsToDest = polylineOptionsToDest;
+
+
+    }
 
     public NearByTransit(LatLng origin, LatLng pos, String url) {
         this.origin = origin;
@@ -52,20 +82,20 @@ public class NearByTransit {
         this.destnation = destnation;
     }
 
-    public int getTimeInMin() {
-        return timeInMin;
+    public int getCycTimeInMin() {
+        return cycTimeInMin;
     }
 
-    public void setTimeInMin(int timeInMin) {
-        this.timeInMin = timeInMin;
+    public void setCycTimeInMin(int cycTimeInMin) {
+        this.cycTimeInMin = cycTimeInMin;
     }
 
-    public String getDuration() {
-        return duration;
+    public String getCycDuration() {
+        return cycDuration;
     }
 
-    public void setDuration(String duration) {
-        this.duration = duration;
+    public void setCycDuration(String cycDuration) {
+        this.cycDuration = cycDuration;
     }
 
     public JSONObject getApiResponse() {

@@ -177,7 +177,16 @@ public class MapsActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.option_get_place) {
+            Log.d("GOT_NEARBY_TRANSIT","Clicked show Transit");
+            Toast.makeText(MapsActivity.this,"Showing  Transit",Toast.LENGTH_LONG).show();
+
+            LatLng dest = new LatLng(37.349770, -121.939460);
+
             showCurrentPlace();
+            while (nearByTransitArrayList.size() == 0);
+            check();
+            Utility.getDurationForDestination(dest,nearByTransitArrayList);
+
         }
         return true;
     }
@@ -262,7 +271,7 @@ public class MapsActivity extends AppCompatActivity
 
 
                     // Getting URL to the Google Directions API
-                    String url = getUrl(origin, dest);
+                    String url = Utility.getUrl(origin, dest);
                     Log.d("onMapClick", url.toString());
                     Object[] DataTransfer = new Object[2];
                     DataTransfer[0] = mMap;
@@ -285,8 +294,15 @@ public class MapsActivity extends AppCompatActivity
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
+        showCurrentPlace();
 
-        test_call();
+//        test_call();
+//        check();
+    }
+
+    private void check() {
+
+        Log.d("GOT_NEARBY_TRANSIT", "" + nearByTransitArrayList.size());
     }
 
     /**
@@ -361,7 +377,7 @@ public class MapsActivity extends AppCompatActivity
 
         latitude = mLastKnownLocation.getLatitude();
         longitude = mLastKnownLocation.getLongitude();
-        String url = getUrl(latitude, longitude, "transit_station");
+        String url = Utility.getUrl(latitude, longitude, "transit_station");
         Log.e("URL =================", url);
         Object[] DataTransfer = new Object[4];
         DataTransfer[0] = mMap;
@@ -486,51 +502,10 @@ public class MapsActivity extends AppCompatActivity
         }
     }
 
-    public static String getUrl(double latitude, double longitude, String nearbyPlace) {
 
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + latitude + "," + longitude);
-//        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append(("&rankby=" + "distance"));
-        googlePlacesUrl.append("&type=" + nearbyPlace);
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + "AIzaSyDIdqc_BwvnRC24_FwS4-oSITnKFT1N5AY");
-        Log.d("getUrl", googlePlacesUrl.toString());
-        return (googlePlacesUrl.toString());
-    }
-
-    public static String getUrl(LatLng origin, LatLng dest) {
-
-        // Origin of route
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-        // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
-
-        // Sensor enabled
-        String sensor = "sensor=false";
-
-        String mode = "mode=bicycling";
-
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
-
-        // Output format
-        String output = "json";
-
-        // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
-
-
-        return url;
-    }
 
 
     public void test_call() {
         showCurrentPlace();
-
-        Log.d("GOT_NEARBY_TRANSIT", "" + nearByTransitArrayList.size());
-        mMap.addPolyline(nearByTransitArrayList.get(0).getPolyLineOptions());
     }
 }

@@ -1,18 +1,11 @@
 package com.example.aijaz.map1;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by aijaz on 3/19/17.
@@ -57,6 +50,6 @@ public class ParserTime extends AsyncTask<Object, Integer, String> {
     // Executes in UI thread, after the parsing process
     @Override
     protected void onPostExecute(String time) {
-        nearByTransit.setDuration(time);
+        nearByTransit.setCycDuration(time);
     }
 }

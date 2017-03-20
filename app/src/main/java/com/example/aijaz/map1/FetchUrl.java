@@ -14,53 +14,88 @@ public class FetchUrl extends AsyncTask<Object, String, String> {
     GoogleMap mMap;
     String url;
     NearByTransit nearByTransit;
+    boolean isDestDuration;
     @Override
     protected String doInBackground(Object... params) {
 
         // For storing data from web service
         String data = "";
-
-        try {
-            mMap = (GoogleMap) params[0];
-            url = (String) params[1];
-            nearByTransit = (NearByTransit) params[2];
-            // Fetching the data from web service
-            DownloadUrl downloadUrl = new DownloadUrl();
+        if(params.length == 3) {
+            try {
+                mMap = (GoogleMap) params[0];
+                url = (String) params[1];
+                nearByTransit = (NearByTransit) params[2];
+                // Fetching the data from web service
+                DownloadUrl downloadUrl = new DownloadUrl();
 //            data = downloadUrl.readUrl(url[0]);
-            data = downloadUrl.readUrl(url);
-            Log.d("Background Task data", data.toString());
-        } catch (Exception e) {
-            Log.d("Background Task", e.toString());
+                data = downloadUrl.readUrl(url);
+                Log.d("Background Task data", data.toString());
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        } else {
+            try {
+//                mMap = (GoogleMap) params[0];
+                url = (String) params[1];
+                nearByTransit = (NearByTransit) params[2];
+                isDestDuration = (boolean) params[3];
+                // Fetching the data from web service
+                DownloadUrl downloadUrl = new DownloadUrl();
+//            data = downloadUrl.readUrl(url[0]);
+                data = downloadUrl.readUrl(url);
+                Log.d("Background Task data", data.toString());
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
         }
-        return data;
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
 
+        if(isDestDuration){
+            Object[] DataTransfer = new Object[4];
+            DataTransfer[0] = null;
+            DataTransfer[1] = result;
+            DataTransfer[2] = nearByTransit;
+            DataTransfer[3] = isDestDuration;
 
-        Object[] DataTransfer = new Object[3];
-        DataTransfer[0] = mMap;
-        DataTransfer[1] = result;
-        DataTransfer[2] = nearByTransit;
+            if (!result.contains("error_message")) {
+                ParserTask parserTask = new ParserTask();
+
+
+                // Invokes the thread for parsing the JSON data
+                parserTask.execute(DataTransfer);
+                Log.d("Fetch Url Success", "number for" + nearByTransit.getPos().toString());
+            } else {
+
+                Log.d("Fetch Url Error", "number for" + nearByTransit.getPos().toString());
+            }
+
+        } else {
+            Object[] DataTransfer = new Object[3];
+            DataTransfer[0] = mMap;
+            DataTransfer[1] = result;
+            DataTransfer[2] = nearByTransit;
 
 //        ParserTime parserTime = new ParserTime();
 //
 //        parserTime.execute(DataTransfer);
-        int c = 0;
-        if(!result.contains("error_message")){
-            ParserTask parserTask = new ParserTask();
+            if (!result.contains("error_message")) {
+                ParserTask parserTask = new ParserTask();
 
 
-            // Invokes the thread for parsing the JSON data
-            parserTask.execute(DataTransfer);
-            Log.d("Fetch Url Success", "number for" + nearByTransit.getPos().toString());
-        } else {
+                // Invokes the thread for parsing the JSON data
+                parserTask.execute(DataTransfer);
+                Log.d("Fetch Url Success", "number for" + nearByTransit.getPos().toString());
+            } else {
 
-            Log.d("Fetch Url Error", "number for" + nearByTransit.getPos().toString());
+                Log.d("Fetch Url Error", "number for" + nearByTransit.getPos().toString());
+            }
+
         }
-
-
     }
 }

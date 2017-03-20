@@ -75,8 +75,8 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
 
             // Getting URL to the Google Directions API
-            String url = MapsActivity.getUrl(origin, dest);
-            Log.d("onMapClick", url.toString());
+            String url = Utility.getUrl(origin, dest);
+
             Object[] DataTransfer = new Object[3];
             DataTransfer[0] = mMap;
             DataTransfer[1] = url;
@@ -84,6 +84,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
             NearByTransit nearByTransit = new NearByTransit(origin,dest,url);
             nearByTransitArrayList.add(nearByTransit);
+            Log.d("On_get_nearby_places", "added nearByTransit" + nearByTransitArrayList.size());
             DataTransfer[2] = nearByTransit;
             FetchUrl FetchUrl = new FetchUrl();
 
