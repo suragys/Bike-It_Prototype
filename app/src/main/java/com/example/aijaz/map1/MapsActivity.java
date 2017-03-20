@@ -182,7 +182,8 @@ public class MapsActivity extends AppCompatActivity
 
             LatLng dest = new LatLng(37.349770, -121.939460);
 
-            showCurrentPlace();
+//            showCurrentPlace();
+            Log.d("GOT_NEARBY_TRANSIT","size of list" + nearByTransitArrayList.size());
             while (nearByTransitArrayList.size() == 0);
             check();
             Utility.getDurationForDestination(dest,nearByTransitArrayList);
