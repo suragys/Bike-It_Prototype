@@ -22,7 +22,16 @@ public class NearByTransit {
 
     private JSONObject apiResponse;
     private PolylineOptions polyLineOptions;
-    private PolylineOptions polylineOptionsToDest;
+    private PolylineOptions polylineOptionsBetweenTransits;
+    private PolylineOptions polylineOptionsBetweenDestTransitAndDest;
+
+    public PolylineOptions getPolylineOptionsBetweenDestTransitAndDest() {
+        return polylineOptionsBetweenDestTransitAndDest;
+    }
+
+    public void setPolylineOptionsBetweenDestTransitAndDest(PolylineOptions polylineOptionsBetweenDestTransitAndDest) {
+        this.polylineOptionsBetweenDestTransitAndDest = polylineOptionsBetweenDestTransitAndDest;
+    }
 
     public int getTotalTimeInMin() {
         return totalTimeInMin;
@@ -40,13 +49,13 @@ public class NearByTransit {
         this.transitTime = transitTime;
     }
 
-    public PolylineOptions getPolylineOptionsToDest() {
-        return polylineOptionsToDest;
+    public PolylineOptions getPolylineOptionsBetweenTransits() {
+        return polylineOptionsBetweenTransits;
     }
 
-    public void setPolylineOptionsToDest(PolylineOptions polylineOptionsToDest) {
+    public void setPolylineOptionsBetweenTransits(PolylineOptions polylineOptionsBetweenTransits) {
 
-        this.polylineOptionsToDest = polylineOptionsToDest;
+        this.polylineOptionsBetweenTransits = polylineOptionsBetweenTransits;
 
 
     }

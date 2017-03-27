@@ -122,7 +122,7 @@ public class ParserTask extends AsyncTask<Object, Integer, List<List<HashMap<Str
 
             }
 
-            nearByTransit.setPolylineOptionsToDest(lineOptions);
+            nearByTransit.setPolylineOptionsBetweenTransits(lineOptions);
 
             // Drawing polyline in the Google Map for the i-th route
 //            if (lineOptions != null) {
