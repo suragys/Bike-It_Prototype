@@ -3,10 +3,8 @@ package com.example.aijaz.map1;
 import android.location.Location;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,34 +16,6 @@ import java.util.List;
  */
 
 public class Utility {
-
-    public static void getNearByTransits(GoogleMap mMap, String url, Location myLocation, List<NearByTransit> nearByTransitList){
-        String googlePlacesData;
-        DownloadUrl downloadUrl = new DownloadUrl();
-        try {
-            googlePlacesData = downloadUrl.readUrl(url);
-            List<HashMap<String, String>> nearbyPlacesList = null;
-            DataParser dataParser = new DataParser();
-            nearbyPlacesList = dataParser.parse(googlePlacesData);
-
-
-            for (int i = 0; i < nearbyPlacesList.size(); i++) {
-                HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
-                double lat = Double.parseDouble(googlePlace.get("lat"));
-                double lng = Double.parseDouble(googlePlace.get("lng"));
-
-                LatLng origin = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
-                LatLng pos = new LatLng(lat,lng);
-
-                NearByTransit nearByTransit = new NearByTransit(origin,pos,url);
-                nearByTransitList.add(nearByTransit);
-
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static String getUrl(double latitude, double longitude, String nearbyPlace) {
 
@@ -60,7 +30,7 @@ public class Utility {
         return (googlePlacesUrl.toString());
     }
 
-    public static String getUrl(LatLng origin, LatLng dest) {
+    public static String getUrl(LatLng origin, LatLng dest, String mode) {
 
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -72,7 +42,7 @@ public class Utility {
         // Sensor enabled
         String sensor = "sensor=false";
 
-        String mode = "mode=bicycling";
+        mode = "mode=" + mode;
 
         // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
@@ -87,22 +57,26 @@ public class Utility {
         return url;
     }
 
-    public static void getDurationForDestination(LatLng dest, ArrayList<NearByTransit> nearByTransitArrayList) {
-        for(NearByTransit nearByTransit : nearByTransitArrayList){
-            nearByTransit.setDestnation(dest);
+    public static void getBikeAndTransitRoutes(LatLng dest, ArrayList<NearByTransit> nearByTransitArrayList, GoogleMap map, Location origin) {
 
-            String url = Utility.getUrl(nearByTransit.getPos(),dest);
-            Object[] DataTransfer = new Object[4];
-            DataTransfer[0] = null;
-            DataTransfer[1] = url;
-            DataTransfer[2] = nearByTransit;
-            DataTransfer[3] = true;
-            FetchUrl FetchUrl = new FetchUrl();
 
-            // Start downloading json data from Google Directions API
-            FetchUrl.execute(DataTransfer);
-        }
+        LatLng source = new LatLng(origin.getLatitude(), origin.getLongitude());
+        Object[] DataTransfer = new Object[4];
+        DataTransfer[0] = map;
+        DataTransfer[1] = source;
+        DataTransfer[2] = dest;
+        DataTransfer[3] = nearByTransitArrayList;
 
-        Log.d("Get_Duration_Dest","Got Duration for total travel");
+        GetBikeAndTransitRoutes getBikeAndTransitRoutes = new GetBikeAndTransitRoutes();
+        getBikeAndTransitRoutes.execute(DataTransfer);
+        Log.d("Get_Duration_Dest", "Got Duration for total travel");
+
+
+    }
+
+    public static int getTimeInMin(String s) {
+        String[] a = s.split(" ");
+
+        return Integer.parseInt(a[0]);
     }
 }

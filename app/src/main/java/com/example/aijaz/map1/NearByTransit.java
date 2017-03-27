@@ -51,10 +51,10 @@ public class NearByTransit {
 
     }
 
-    public NearByTransit(LatLng origin, LatLng pos, String url) {
+    public NearByTransit(LatLng origin, LatLng pos) {
         this.origin = origin;
         this.pos = pos;
-        this.url = url;
+        this.url = Utility.getUrl(origin,pos,"bicycling");
 
     }
 

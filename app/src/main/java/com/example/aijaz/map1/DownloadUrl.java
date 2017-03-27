@@ -46,7 +46,7 @@ import java.net.URL;
         } catch (Exception e) {
             Log.d("Exception", e.toString());
         } finally {
-            iStream.close();
+            if(iStream != null) iStream.close();
             urlConnection.disconnect();
         }
         return data;

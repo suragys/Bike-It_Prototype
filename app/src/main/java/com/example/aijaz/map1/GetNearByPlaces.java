@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * Created by navneet on 23/7/16.
  */
-public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
+public class GetNearByPlaces extends AsyncTask<Object, String, String> {
 
     String googlePlacesData;
     GoogleMap mMap;
@@ -28,7 +27,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     @Override
     protected String doInBackground(Object... params) {
         try {
-            Log.d("GetNearbyPlacesData", "doInBackground entered");
+            Log.d("GetBikeAndTransitRoutes", "doInBackground entered");
             mMap = (GoogleMap) params[0];
             url = (String) params[1];
             myLocation = (Location) params[2];
@@ -75,21 +74,21 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
 
             // Getting URL to the Google Directions API
-            String url = Utility.getUrl(origin, dest);
+            String url = Utility.getUrl(origin, dest,"bicycling");
 
             Object[] DataTransfer = new Object[3];
             DataTransfer[0] = mMap;
             DataTransfer[1] = url;
 
 
-            NearByTransit nearByTransit = new NearByTransit(origin,dest,url);
+            NearByTransit nearByTransit = new NearByTransit(origin,dest);
             nearByTransitArrayList.add(nearByTransit);
             Log.d("On_get_nearby_places", "added nearByTransit" + nearByTransitArrayList.size());
             DataTransfer[2] = nearByTransit;
             FetchUrl FetchUrl = new FetchUrl();
 
             // Start downloading json data from Google Directions API
-            FetchUrl.execute(DataTransfer);
+//            FetchUrl.execute(DataTransfer);
             //move map camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
