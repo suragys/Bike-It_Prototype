@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by aijaz on 3/19/17.
+ * Created by surag on 3/19/17.
  */
 
 public class Utility {
@@ -49,8 +49,10 @@ public class Utility {
         time += offsetTime;
         String departure_time = "departure_time=" + time;
 
+        String key = "key=" + "AIzaSyC_CGYnFFfASk67HM3pykKHnOiBJKtb2HE";
+
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + departure_time;
+        String parameters = key + "&" + str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + departure_time;
 
         // Output format
         String output = "json";

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Created by navneet on 23/7/16.
+ * Created by surag 03/19/17.
  */
 public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
@@ -170,6 +170,7 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
         });
 
         Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() + "mins", Toast.LENGTH_LONG).show();
+        Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() + "mins", Toast.LENGTH_LONG).show();
 
     }
 
@@ -210,7 +211,7 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
 
     private void getDestTime(NearByTransit nearByTransit) {
-        if(nearByTransit.getCycDuration() == null) {
+        if (nearByTransit.getCycDuration() == null) {
             Log.e(this.getClass().getSimpleName(), " The cycle duration for " + nearByTransit.getPos().toString() + " is not present");
             return;
         }

@@ -8,7 +8,7 @@ import com.google.android.gms.maps.GoogleMap;
 import org.json.JSONObject;
 
 /**
- * Created by aijaz on 3/19/17.
+ * Created by surag on 3/19/17.
  */
 
 public class ParserTime extends AsyncTask<Object, Integer, String> {
