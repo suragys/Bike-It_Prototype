@@ -1,8 +1,10 @@
 package com.example.aijaz.map1;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -28,6 +30,10 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
     ArrayList<NearByTransit> nearByTransitArrayList;
     LatLng source;
     LatLng dest;
+    Polyline p1;
+    Polyline p2;
+    Polyline p3;
+    Context applicationContext;
 
     @Override
     protected String doInBackground(Object... params) {
@@ -38,6 +44,7 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
             source = (LatLng) params[1];
             dest = (LatLng) params[2];
             nearByTransitArrayList = (ArrayList<NearByTransit>) params[3];
+            applicationContext = (Context) params[4];
 
             String url = Utility.getUrl(source.latitude, source.longitude, "transit_station");
 
@@ -57,7 +64,7 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
         List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
         nearbyPlacesList = dataParser.parse(result);
-//        addDefaultCyclingTime();
+        addDefaultCyclingTime();
         ShowNearbyPlaces(nearbyPlacesList);
         computeTop2(nearByTransitArrayList);
 
@@ -105,12 +112,16 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
         Log.d(this.getClass().getSimpleName(), " The best time is " + min1.getTotalTimeInMin());
         if (min1.getPolyLineOptions() != null) {
-            Polyline p = mMap.addPolyline(min1.getPolyLineOptions());
+            if (p1 != null) p1.remove();
+            p1 = mMap.addPolyline(min1.getPolyLineOptions());
         }
 
         if (min1.getPolylineOptionsToDest() != null) {
-            mMap.addPolyline(min1.getPolylineOptionsToDest());
+            if (p2 != null) p2.remove();
+            p2 = mMap.addPolyline(min1.getPolylineOptionsToDest());
         }
+
+        Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() + "mins", Toast.LENGTH_LONG).show();
 
     }
 
@@ -154,6 +165,12 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
         String jsonData = "";
         DownloadUrl downloadUrl = new DownloadUrl();
         try {
+
+//            // do the same for the destination
+//            String url = Utility.getUrl(source.latitude, source.longitude, "transit_station");
+//            DownloadUrl downloadUrl = new DownloadUrl();
+//            googlePlacesData = downloadUrl.readUrl(url);
+
 //            jsonData = downloadUrl.readUrl(nearByTransit.getUrl());
             FetchUrl2 fetchUrl = new FetchUrl2();
             String url = Utility.getUrl(nearByTransit.getPos(), dest, "transit", Utility.getTimeInMin(nearByTransit.getCycDuration()));

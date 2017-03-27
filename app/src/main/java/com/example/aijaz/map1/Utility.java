@@ -1,5 +1,6 @@
 package com.example.aijaz.map1;
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
@@ -61,15 +62,16 @@ public class Utility {
         return url;
     }
 
-    public static void getBikeAndTransitRoutes(LatLng dest, ArrayList<NearByTransit> nearByTransitArrayList, GoogleMap map, Location origin) {
+    public static void getBikeAndTransitRoutes(LatLng dest, ArrayList<NearByTransit> nearByTransitArrayList, GoogleMap map, Location origin, Context applicationContext) {
 
 
         LatLng source = new LatLng(origin.getLatitude(), origin.getLongitude());
-        Object[] DataTransfer = new Object[4];
+        Object[] DataTransfer = new Object[5];
         DataTransfer[0] = map;
         DataTransfer[1] = source;
         DataTransfer[2] = dest;
         DataTransfer[3] = nearByTransitArrayList;
+        DataTransfer[4] = applicationContext;
 
         GetBikeAndTransitRoutes getBikeAndTransitRoutes = new GetBikeAndTransitRoutes();
         getBikeAndTransitRoutes.execute(DataTransfer);
