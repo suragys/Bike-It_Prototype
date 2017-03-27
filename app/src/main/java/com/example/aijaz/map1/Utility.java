@@ -30,7 +30,7 @@ public class Utility {
         return (googlePlacesUrl.toString());
     }
 
-    public static String getUrl(LatLng origin, LatLng dest, String mode) {
+    public static String getUrl(LatLng origin, LatLng dest, String mode, int offsetTime) {
 
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -44,8 +44,12 @@ public class Utility {
 
         mode = "mode=" + mode;
 
+        long time = System.currentTimeMillis() / 1000l;
+        time += offsetTime;
+        String departure_time = "departure_time=" + time;
+
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode + "&" + departure_time;
 
         // Output format
         String output = "json";
@@ -75,8 +79,18 @@ public class Utility {
     }
 
     public static int getTimeInMin(String s) {
+        if (s == null) return 0;
+        s = s.trim();
         String[] a = s.split(" ");
-
-        return Integer.parseInt(a[0]);
+        int totalTime = 0;
+        for (int i = 1; i < a.length; i += 2) {
+            String unit = a[i];
+            int time = Integer.parseInt(a[i - 1]);
+            if (unit.contains("h")) {
+                time = time * 60;
+            }
+            totalTime += time;
+        }
+        return totalTime;
     }
 }
