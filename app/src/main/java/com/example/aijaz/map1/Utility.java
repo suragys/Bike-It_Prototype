@@ -17,13 +17,13 @@ import java.util.List;
  */
 
 public class Utility {
-
+    private static int PROXIMITY_RADIUS = 4000;
     public static String getUrl(double latitude, double longitude, String nearbyPlace) {
 
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
-//        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append(("&rankby=" + "distance"));
+        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
+//        googlePlacesUrl.append(("&rankby=" + "prominence"));
         googlePlacesUrl.append("&type=" + nearbyPlace);
         googlePlacesUrl.append("&sensor=true");
         googlePlacesUrl.append("&key=" + "AIzaSyDIdqc_BwvnRC24_FwS4-oSITnKFT1N5AY");

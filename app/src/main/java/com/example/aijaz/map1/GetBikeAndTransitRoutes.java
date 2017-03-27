@@ -6,8 +6,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -77,6 +80,7 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
         NearByTransit n = new NearByTransit(source, dest);
         getCyclingTime(n);
         n.setTransitTime("0 mins");
+        n.setTotalTimeInMin(Utility.getTimeInMin(n.getCycDuration()));
         nearByTransitArrayList.add(n);
         Log.d(this.getClass().getSimpleName(), "full cycling time = " + n.getTotalTimeInMin());
 
@@ -105,21 +109,52 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
         NearByTransit min1 = nearByTransitArrayList.get(0);
         for (NearByTransit n : nearByTransitArrayList) {
+            Log.e("Total time====", "" + n.getTotalTimeInMin());
             if (n.getTotalTimeInMin() != 0 && n.getTotalTimeInMin() < min1.getTotalTimeInMin()) {
                 min1 = n;
             }
         }
 
         Log.d(this.getClass().getSimpleName(), " The best time is " + min1.getTotalTimeInMin());
+//        LatLngBounds.Builder bc = new LatLngBounds.Builder();
+//        int totalPoints = 0;
         if (min1.getPolyLineOptions() != null) {
             if (p1 != null) p1.remove();
             p1 = mMap.addPolyline(min1.getPolyLineOptions());
+//            List<LatLng> points = p1.getPoints(); // route is instance of PolylineOptions
+//            totalPoints += points.size();
+//            for (LatLng item : points) {
+//                bc.include(item);
+//            }
         }
 
         if (min1.getPolylineOptionsToDest() != null) {
             if (p2 != null) p2.remove();
             p2 = mMap.addPolyline(min1.getPolylineOptionsToDest());
+//            List<LatLng> points = p1.getPoints(); // route is instance of PolylineOptions
+//            totalPoints += points.size();
+//            for (LatLng item : points) {
+//                bc.include(item);
+//            }
+
         }
+
+
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bc.build(), 1000));
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(source);
+        builder.include(dest);
+        LatLngBounds bounds = builder.build();
+
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+        mMap.animateCamera(cu, new GoogleMap.CancelableCallback(){
+            public void onCancel(){}
+            public void onFinish(){
+                CameraUpdate zout = CameraUpdateFactory.zoomBy((float) -0.3);
+                mMap.animateCamera(zout);
+            }
+        });
 
         Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() + "mins", Toast.LENGTH_LONG).show();
 
@@ -138,6 +173,7 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
             getCyclingTime(nearByTransit);
             getDestTime(nearByTransit);
             nearByTransitArrayList.add(nearByTransit);
+
 
 
 //            Object[] DataTransfer = new Object[3];

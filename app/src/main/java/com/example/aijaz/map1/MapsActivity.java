@@ -235,7 +235,7 @@ public class MapsActivity extends AppCompatActivity
             Log.d("GOT_NEARBY_TRANSIT", "size of list" + nearByTransitArrayList.size());
             Toast.makeText(MapsActivity.this, "Finding best route!!!", Toast.LENGTH_LONG).show();
             Utility.getBikeAndTransitRoutes(destination, new ArrayList<NearByTransit>(), mMap, mLastKnownLocation,this.getApplicationContext());
-            destination = null;
+//            destination = null;
             Log.d("GOT_NEARBY_TRANSIT", "size of list" + nearByTransitArrayList.size());
         }
         return true;
