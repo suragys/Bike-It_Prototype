@@ -116,38 +116,20 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
         }
 
         Log.d(this.getClass().getSimpleName(), " The best time is " + min1.getTotalTimeInMin());
-//        LatLngBounds.Builder bc = new LatLngBounds.Builder();
-//        int totalPoints = 0;
+
         if (min1.getPolyLineOptions() != null) {
             if (p1 != null) p1.remove();
             p1 = mMap.addPolyline(min1.getPolyLineOptions());
-//            List<LatLng> points = p1.getPoints(); // route is instance of PolylineOptions
-//            totalPoints += points.size();
-//            for (LatLng item : points) {
-//                bc.include(item);
-//            }
         }
 
         if (min1.getPolylineOptionsBetweenTransits() != null) {
             if (p2 != null) p2.remove();
             p2 = mMap.addPolyline(min1.getPolylineOptionsBetweenTransits());
-//            List<LatLng> points = p1.getPoints(); // route is instance of PolylineOptions
-//            totalPoints += points.size();
-//            for (LatLng item : points) {
-//                bc.include(item);
-//            }
-
         }
 
         if (min1.getPolylineOptionsBetweenDestTransitAndDest() != null) {
             if (p3 != null) p3.remove();
             p3 = mMap.addPolyline(min1.getPolylineOptionsBetweenDestTransitAndDest());
-//            List<LatLng> points = p1.getPoints(); // route is instance of PolylineOptions
-//            totalPoints += points.size();
-//            for (LatLng item : points) {
-//                bc.include(item);
-//            }
-
         }
 
 
@@ -169,8 +151,10 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
             }
         });
 
-        Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() + "mins", Toast.LENGTH_LONG).show();
-        Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() + "mins", Toast.LENGTH_LONG).show();
+        Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() +
+                "mins", Toast.LENGTH_LONG).show();
+        Toast.makeText(applicationContext, "The total travel is " + min1.getTotalTimeInMin() +
+                "mins", Toast.LENGTH_LONG).show();
 
     }
 
@@ -187,25 +171,6 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
             getCyclingTime(nearByTransit);
             getDestTime(nearByTransit);
             nearByTransitArrayList.add(nearByTransit);
-
-
-//            Object[] DataTransfer = new Object[3];
-//            DataTransfer[0] = mMap;
-//            DataTransfer[1] = url;
-//
-//
-//            NearByTransit nearByTransit = new NearByTransit(origin,dest,url);
-//            nearByTransitArrayList.add(nearByTransit);
-//            Log.d("On_get_nearby_places", "added nearByTransit" + nearByTransitArrayList.size());
-//            DataTransfer[2] = nearByTransit;
-//            FetchUrl FetchUrl = new FetchUrl();
-//
-//            // Start downloading json data from Google Directions API
-//            FetchUrl.execute(DataTransfer);
-//            //move map camera
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-//            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-
         }
     }
 
@@ -221,23 +186,18 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
             // do the same for the destination
             String url = Utility.getUrl(dest.latitude, dest.longitude, "transit_station");
-//            DownloadUrl downloadUrl = new DownloadUrl();
-//            googlePlacesData = downloadUrl.readUrl(url);
             FetchUrl2 fetchUrl2 = new FetchUrl2();
             fetchUrl2.execute(url);
             String googlePlacesDataString = fetchUrl2.get();
             List<HashMap<String, String>> nearbyPlacesList = null;
             DataParser dataParser = new DataParser();
             nearbyPlacesList = dataParser.parse(googlePlacesDataString);
-//            addDefaultCyclingTime();
-//            ShowNearbyPlaces(nearbyPlacesList);
             int totalTime = Integer.MAX_VALUE;
             for (int i = 0; i < nearbyPlacesList.size(); i++) {
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
                 double lat = Double.parseDouble(googlePlace.get("lat"));
                 double lng = Double.parseDouble(googlePlace.get("lng"));
                 LatLng destTransit = new LatLng(lat, lng);
-//                NearByTransit nearByTransit = new NearByTransit(source, new LatLng(lat, lng));
                 int fc = Utility.getTimeInMin(nearByTransit.getCycDuration());
                 int cycTime = getCyclingTime(destTransit, dest);
                 int transTime = getDestTime(nearByTransit.getPos(), destTransit);
@@ -299,8 +259,6 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
                     // set poly lines between destTransit and dest
 
-                    jsonData = "";
-
 
                     FetchUrl2 fetchUrl3 = new FetchUrl2();
                     url = Utility.getUrl(destTransit, dest, "bicycling", 0);
@@ -314,7 +272,7 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
                         DataParser2 parser = new DataParser2();
 
                         // Starts parsing data
-                        String json = jsonObject.toString();
+
                         List<List<HashMap<String, String>>> routes = parser.parse(jsonObject);
                         String time = parser.getDurations(jsonObject);
                         nearByTransit.setCycDuration(time);
@@ -361,57 +319,6 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
             }
 
 
-//            jsonData = downloadUrl.readUrl(nearByTransit.getUrl());
-//            FetchUrl2 fetchUrl = new FetchUrl2();
-//            url = Utility.getUrl(nearByTransit.getPos(), dest, "transit", Utility.getTimeInMin(nearByTransit.getCycDuration()));
-//            Log.d("GetBikeAnTransitRoute", url);
-//            fetchUrl.execute(url);
-//            jsonData = fetchUrl.get();
-//            if (!jsonData.contains("error_message")) {
-//                Log.d("Fetch Url Success", "number for" + nearByTransit.getPos().toString());
-//                JSONObject jsonObject = new JSONObject(jsonData);
-//                Log.d("ParserTask", jsonData.toString());
-//                DataParser2 parser = new DataParser2();
-//                // Starts parsing data
-//                String json = jsonObject.toString();
-//                List<List<HashMap<String, String>>> routes = parser.parse(jsonObject);
-//                String time = parser.getDurations(jsonObject);
-//                nearByTransit.setTransitTime(time);
-//                Log.d("ParserTask", "Executing routes");
-//                Log.d("ParserTask", routes.toString());
-//                ArrayList<LatLng> points;
-//                PolylineOptions lineOptions = null;
-//
-//                // Traversing through all the routes
-//                for (int i = 0; i < routes.size(); i++) {
-//                    points = new ArrayList<>();
-//                    lineOptions = new PolylineOptions();
-//
-//                    // Fetching i-th route
-//                    List<HashMap<String, String>> path = routes.get(i);
-//
-//                    // Fetching all the points in i-th route
-//                    for (int j = 0; j < path.size(); j++) {
-//                        HashMap<String, String> point = path.get(j);
-//
-//                        double lat = Double.parseDouble(point.get("lat"));
-//                        double lng = Double.parseDouble(point.get("lng"));
-//                        LatLng position = new LatLng(lat, lng);
-//
-//                        points.add(position);
-//                    }
-//
-//                    // Adding all the points in the route to LineOptions
-//                    lineOptions.addAll(points);
-//                    lineOptions.width(11);
-//                    lineOptions.color(Color.RED);
-//
-//                    Log.d("onPostExecute", "onPostExecute line options decoded");
-//
-//                }
-//
-//                nearByTransit.setPolylineOptionsBetweenTransits(lineOptions);
-//            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -440,7 +347,6 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
                 // Starts parsing data
                 String json = jsonObject.toString();
-//                List<List<HashMap<String, String>>> routes = parser.parse(jsonObject);
                 String time = parser.getDurations(jsonObject);
 
                 return Utility.getTimeInMin(time);
@@ -476,7 +382,6 @@ public class GetBikeAndTransitRoutes extends AsyncTask<Object, String, String> {
 
                 // Starts parsing data
                 String json = jsonObject.toString();
-//                List<List<HashMap<String, String>>> routes = parser.parse(jsonObject);
                 String time = parser.getDurations(jsonObject);
 
                 return Utility.getTimeInMin(time);

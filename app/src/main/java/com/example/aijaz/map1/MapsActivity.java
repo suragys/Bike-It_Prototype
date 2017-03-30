@@ -79,11 +79,6 @@ public class MapsActivity extends AppCompatActivity
     private String[] mLikelyPlaceAddresses = new String[mMaxEntries];
     private String[] mLikelyPlaceAttributions = new String[mMaxEntries];
     private LatLng[] mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
-
-
-    private int PROXIMITY_RADIUS = 4000;
-    Marker mCurrLocationMarker;
-    LocationRequest mLocationRequest;
     static LatLng destination = null;
 
 
@@ -101,15 +96,6 @@ public class MapsActivity extends AppCompatActivity
 
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_maps);
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
 
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
@@ -223,19 +209,14 @@ public class MapsActivity extends AppCompatActivity
 
         if (item.getItemId() == R.id.option_get_place) {
             Log.d("GOT_NEARBY_TRANSIT", "Clicked show Transit");
-
-
-//            santa clara university
-//            LatLng dest = new LatLng(37.349770, -121.939460);
-
             if(destination == null){
                 Toast.makeText(MapsActivity.this, "Please select a destination", Toast.LENGTH_LONG).show();
                 return true;
             }
             Log.d("GOT_NEARBY_TRANSIT", "size of list" + nearByTransitArrayList.size());
             Toast.makeText(MapsActivity.this, "Finding best route!!!", Toast.LENGTH_LONG).show();
-            Utility.getBikeAndTransitRoutes(destination, new ArrayList<NearByTransit>(), mMap, mLastKnownLocation,this.getApplicationContext());
-//            destination = null;
+            Utility.getBikeAndTransitRoutes(destination, new ArrayList<NearByTransit>(), mMap,
+                    mLastKnownLocation,this.getApplicationContext());
             Log.d("GOT_NEARBY_TRANSIT", "size of list" + nearByTransitArrayList.size());
         }
         return true;
@@ -276,7 +257,6 @@ public class MapsActivity extends AppCompatActivity
         });
 
 //         Setting onclick event listener for the map
-
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
             @Override
@@ -299,32 +279,6 @@ public class MapsActivity extends AppCompatActivity
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
                 mMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
                 destination = point;
-
-//                // Checks, whether start and end locations are captured
-//                if (MarkerPoints.size() >= 2) {
-//                    LatLng origin = MarkerPoints.get(0);
-//                    LatLng dest = MarkerPoints.get(1);
-//
-//                    // origin current location
-//                    // destination list
-//                    // cycling time
-//
-//
-//                    // Getting URL to the Google Directions API
-//                    String url = Utility.getUrl(origin, dest,"driving");
-//                    Log.d("onMapClick", url.toString());
-//                    Object[] DataTransfer = new Object[2];
-//                    DataTransfer[0] = mMap;
-//                    DataTransfer[1] = url;
-//                    FetchUrl FetchUrl = new FetchUrl();
-//
-//                    // Start downloading json data from Google Directions API
-//                    FetchUrl.execute(DataTransfer);
-//                    //move map camera
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-//                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-//                }
-
             }
         });
 
@@ -398,109 +352,6 @@ public class MapsActivity extends AppCompatActivity
         updateLocationUI();
     }
 
-//    /**
-//     * Prompts the user to select the current place from a list of likely places, and shows the
-//     * current place on the map - provided the user has granted location permission.
-//     */
-//    private void showCurrentPlace() {
-//        if (mMap == null) {
-//            return;
-//        }
-//
-//        latitude = mLastKnownLocation.getLatitude();
-//        longitude = mLastKnownLocation.getLongitude();
-//        String url = Utility.getUrl(latitude, longitude, "transit_station");
-//        Log.e("URL =================", url);
-//        Object[] DataTransfer = new Object[4];
-//        DataTransfer[0] = mMap;
-//        DataTransfer[1] = url;
-//        DataTransfer[2] = mLastKnownLocation;
-//        DataTransfer[3] = nearByTransitArrayList;
-//        Log.d("onClick", url);
-//        GetBikeAndTransitRoutes getBikeAndTransitRoutes = new GetBikeAndTransitRoutes();
-////        getBikeAndTransitRoutes.execute(DataTransfer);
-//        Toast.makeText(MapsActivity.this, "Nearby transits", Toast.LENGTH_LONG).show();
-//
-//
-////        if (mLocationPermissionGranted) {
-////            // Get the likely places - that is, the businesses and other points of interest that
-////            // are the best match for the device's current location.
-////            @SuppressWarnings("MissingPermission")
-////            PendingResult<PlaceLikelihoodBuffer> result = Places.PlaceDetectionApi
-////                    .getCurrentPlace(mGoogleApiClient, null);
-////            result.setResultCallback(new ResultCallback<PlaceLikelihoodBuffer>() {
-////                @Override
-////                public void onResult(@NonNull PlaceLikelihoodBuffer likelyPlaces) {
-////                    int i = 0;
-////                    mLikelyPlaceNames = new String[mMaxEntries];
-////                    mLikelyPlaceAddresses = new String[mMaxEntries];
-////                    mLikelyPlaceAttributions = new String[mMaxEntries];
-////                    mLikelyPlaceLatLngs = new LatLng[mMaxEntries];
-////                    for (PlaceLikelihood placeLikelihood : likelyPlaces) {
-////                        // Build a list of likely places to show the user. Max 5.
-////                        mLikelyPlaceNames[i] = (String) placeLikelihood.getPlace().getName();
-////                        mLikelyPlaceAddresses[i] = (String) placeLikelihood.getPlace().getAddress();
-////                        mLikelyPlaceAttributions[i] = (String) placeLikelihood.getPlace()
-////                                .getAttributions();
-////                        mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-////
-////                        i++;
-////                        if (i > (mMaxEntries - 1)) {
-////                            break;
-////                        }
-////                    }
-////                    // Release the place likelihood buffer, to avoid memory leaks.
-////                    likelyPlaces.release();
-////
-////                    // Show a dialog offering the user the list of likely places, and add a
-////                    // marker at the selected place.
-////                    openPlacesDialog();
-////                }
-////            });
-////        } else {
-////            // Add a default marker, because the user hasn't selected a place.
-////            mMap.addMarker(new MarkerOptions()
-////                    .title(getString(R.string.default_info_title))
-////                    .position(mDefaultLocation)
-////                    .snippet(getString(R.string.default_info_snippet)));
-////        }
-//    }
-
-    /**
-     * Displays a form allowing the user to select a place from a list of likely places.
-     */
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The "which" argument contains the position of the selected item.
-                        LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                        String markerSnippet = mLikelyPlaceAddresses[which];
-                        if (mLikelyPlaceAttributions[which] != null) {
-                            markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                        }
-                        // Add a marker for the selected place, with an info window
-                        // showing information about that place.
-                        mMap.addMarker(new MarkerOptions()
-                                .title(mLikelyPlaceNames[which])
-                                .position(markerLatLng)
-                                .snippet(markerSnippet));
-
-                        // Position the map's camera at the location of the marker.
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                                DEFAULT_ZOOM));
-                    }
-                };
-
-        // Display the dialog.
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();
-    }
-
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
@@ -533,22 +384,4 @@ public class MapsActivity extends AppCompatActivity
             mLastKnownLocation = null;
         }
     }
-
-//    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-//            if (resultCode == RESULT_OK) {
-//                Place place = PlaceAutocomplete.getPlace(this, data);
-//                Log.i(TAG, "Place: " + place.getName());
-//            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-//                Status status = PlaceAutocomplete.getStatus(this, data);
-//                // TODO: Handle the error.
-//                Log.i(TAG, status.getStatusMessage());
-//
-//            } else if (resultCode == RESULT_CANCELED) {
-//                // The user canceled the operation.
-//            }
-//        }
-//    }
 }

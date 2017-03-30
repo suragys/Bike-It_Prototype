@@ -13,10 +13,8 @@ import java.io.IOException;
 
 // Fetches data from url passed
 public class FetchUrl2 extends AsyncTask<Object, String, String> {
-    GoogleMap mMap;
     String url;
-    NearByTransit nearByTransit;
-    boolean isDestDuration;
+
 
     @Override
     protected String doInBackground(Object... params) {

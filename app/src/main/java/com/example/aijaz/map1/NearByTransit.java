@@ -13,7 +13,6 @@ public class NearByTransit {
 
     private LatLng origin;
     private LatLng pos;
-    private LatLng destnation;
     private int cycTimeInMin;
     private String cycDuration;
     private String url;
@@ -81,14 +80,6 @@ public class NearByTransit {
 
     public void setPos(LatLng pos) {
         this.pos = pos;
-    }
-
-    public LatLng getDestnation() {
-        return destnation;
-    }
-
-    public void setDestnation(LatLng destnation) {
-        this.destnation = destnation;
     }
 
     public int getCycTimeInMin() {

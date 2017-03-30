@@ -36,16 +36,12 @@ public class ParserTask extends AsyncTask<Object, Integer, List<List<HashMap<Str
                 jsonData = (String) params[1];
                 nearByTransit = (NearByTransit) params[2];
                 isDestDuration = (boolean) params[3];
-//            jObject = new JSONObject(jsonData[0]);
-//            Log.d("ParserTask",jsonData[0].toString());
                 jObject = new JSONObject(jsonData);
-//                nearByTransit.setApiResponse(jObject);
                 Log.d("ParserTask", jsonData.toString());
                 DataParser2 parser = new DataParser2();
                 Log.d("ParserTask", parser.toString());
 
                 // Starts parsing data
-                String json = jObject.toString();
                 routes = parser.parse(jObject);
                 String time = parser.getDurations(jObject);
                 nearByTransit.setTransitTime(time);
@@ -63,8 +59,6 @@ public class ParserTask extends AsyncTask<Object, Integer, List<List<HashMap<Str
                 mMap = (GoogleMap) params[0];
                 jsonData = (String) params[1];
                 nearByTransit = (NearByTransit) params[2];
-//            jObject = new JSONObject(jsonData[0]);
-//            Log.d("ParserTask",jsonData[0].toString());
                 jObject = new JSONObject(jsonData);
                 nearByTransit.setApiResponse(jObject);
                 Log.d("ParserTask", jsonData.toString());
@@ -72,7 +66,6 @@ public class ParserTask extends AsyncTask<Object, Integer, List<List<HashMap<Str
                 Log.d("ParserTask", parser.toString());
 
                 // Starts parsing data
-                String json = jObject.toString();
                 routes = parser.parse(jObject);
                 String time = parser.getDurations(jObject);
                 nearByTransit.setCycDuration(time);
@@ -124,12 +117,6 @@ public class ParserTask extends AsyncTask<Object, Integer, List<List<HashMap<Str
 
             nearByTransit.setPolylineOptionsBetweenTransits(lineOptions);
 
-            // Drawing polyline in the Google Map for the i-th route
-//            if (lineOptions != null) {
-//                mMap.addPolyline(lineOptions);
-//            } else {
-//                Log.d("onPostExecute", "without Polylines drawn");
-//            }
         } else {
             ArrayList<LatLng> points;
             PolylineOptions lineOptions = null;
@@ -163,13 +150,6 @@ public class ParserTask extends AsyncTask<Object, Integer, List<List<HashMap<Str
             }
 
             nearByTransit.setPolyLineOptions(lineOptions);
-
-            // Drawing polyline in the Google Map for the i-th route
-//            if (lineOptions != null) {
-//                mMap.addPolyline(lineOptions);
-//            } else {
-//                Log.d("onPostExecute", "without Polylines drawn");
-//            }
         }
     }
 }

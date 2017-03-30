@@ -30,7 +30,6 @@ public class FetchUrl extends AsyncTask<Object, String, String> {
                 nearByTransit = (NearByTransit) params[2];
                 // Fetching the data from web service
                 DownloadUrl downloadUrl = new DownloadUrl();
-//            data = downloadUrl.readUrl(url[0]);
                 data = downloadUrl.readUrl(url);
                 Log.d("Background Task data", data.toString());
             } catch (Exception e) {
@@ -47,13 +46,11 @@ public class FetchUrl extends AsyncTask<Object, String, String> {
             }
         } else {
             try {
-//                mMap = (GoogleMap) params[0];
                 url = (String) params[1];
                 nearByTransit = (NearByTransit) params[2];
                 isDestDuration = (boolean) params[3];
                 // Fetching the data from web service
                 DownloadUrl downloadUrl = new DownloadUrl();
-//            data = downloadUrl.readUrl(url[0]);
                 data = downloadUrl.readUrl(url);
                 Log.d("Background Task data", data.toString());
             } catch (Exception e) {
@@ -92,9 +89,6 @@ public class FetchUrl extends AsyncTask<Object, String, String> {
             DataTransfer[1] = result;
             DataTransfer[2] = nearByTransit;
 
-//        ParserTime parserTime = new ParserTime();
-//
-//        parserTime.execute(DataTransfer);
             if (!result.contains("error_message")) {
                 ParserTask parserTask = new ParserTask();
 
